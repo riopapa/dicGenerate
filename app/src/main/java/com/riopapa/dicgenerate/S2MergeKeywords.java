@@ -45,7 +45,7 @@ public class S2MergeKeywords {
         boolean none = jsonFile.delete();
         Gson gson = new Gson();
         String json = gson.toJson(keyRefs);
-        MainActivity.append2File(jsonFile, json);
+        MainActivity.writeFile(jsonFile, json);
         Log.w("merge"," merged JSON file complete");
     }
 

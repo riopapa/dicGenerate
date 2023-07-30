@@ -1,7 +1,9 @@
 package com.riopapa.dicgenerate;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,35 +16,29 @@ import java.util.Comparator;
 
 public class MakeBible {
 
-    void make (Context context, File bibFolder) {
+    void make (Context context, Activity activity, File bibFolder) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.dic0_bible);
         BufferedReader bibleFile = new BufferedReader(new InputStreamReader(inputStream));
         InputStream agpStream = context.getResources().openRawResource(R.raw.agp_161016);
         BufferedReader agpFile = new BufferedReader(new InputStreamReader(agpStream));
         InputStream cevStream = context.getResources().openRawResource(R.raw.cev_161016);
         BufferedReader cevFile = new BufferedReader(new InputStreamReader(cevStream));
-        String bibLine = null, agpLine = null, cevLine = null, oLine = null;
+        String bibLine = null, agpLine = null, cevLine = null, oLine;
 
-        for (int b = 1; b < 67; b++) {
-            try {
-                Files.walk(new File(bibFolder,""+b).toPath())
-                        .sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                        .forEach(File::delete);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+        for (int b = 1; b <= 66; b++) {
 //            try {
-//                FileUtils.deleteDirectory(dir);
+//                Files.walk(new File(bibFolder,""+b).toPath())
+//                        .sorted(Comparator.reverseOrder())
+//                        .map(Path::toFile)
+//                        .forEach(File::delete);
 //            } catch (IOException e) {
 //                e.printStackTrace();
 //            }
-        }
 
-        for (int b = 1; b < 67; b++) {
+//        for (int b = 1; b <= 66; b++) {
             File file = new File(bibFolder,""+b);
-            file.mkdir();
+            if (file.exists())
+                file.mkdir();
 //            try {
 //                FileUtils.deleteDirectory(dir);
 //            } catch (IOException e) {
@@ -66,6 +62,14 @@ public class MakeBible {
 // 01 1:1 태초에 하나님께서 하늘과 땅을 창조하셨습니다.
 // {천지 창조}[_태초_]에 [_하나님_]이 [_천지_]를 [_창조_]하시니라[_$43#1:3_][_$58#1:10_]`a태초에 하나님께서 하늘과 땅을 창조하셨습니다.`cIn the beginning God created the heavens and the earth.
             if (bibLine.startsWith("bib")) {
+                String finalBibLine = bibLine;
+                activity.runOnUiThread(() -> {
+                    TextView tv = activity.findViewById(R.id.text);
+                    String t = tv.getText().toString() + "\n" + finalBibLine;
+                    tv.setText(t);
+                    tv.invalidate();
+                });
+
                 Log.w("make", "make bible "+bibLine);
 //            String str = bibLine.substring(4,7).trim();
                 bibNbr = Integer.parseInt(bibLine.substring(4,7).trim());
@@ -87,8 +91,12 @@ public class MakeBible {
                             "`c" + cevLine.substring(pos2 + 1);
                 }
 //            Log.w("bib"+bibNbr+" "+chNbr+" "+vNbr, oLine);
+//                File file = new File(bibFolder, ""+bibNbr);
+//                if (!file.exists()) {
+//                    file.mkdir();
+//                }
                 File file = new File(bibFolder, bibNbr+"/"+chNbr+".txt");
-                MainActivity.append2File(file, oLine);
+                MainActivity.writeFile(file, oLine);
             }
 
             try {

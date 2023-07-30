@@ -75,7 +75,7 @@ public class MakeRef {
             File file = new File(refFolder, fName+".txt");
             file.delete();
 //  창 2:18-24,1,2,18;창 24:48-60,1,24,48;민 6:24-26,4,6,24;
-            MainActivity.append2File(file, sb.toString());
+            MainActivity.writeFile(file, sb.toString());
 
             try {
                 refLine = refFile.readLine();

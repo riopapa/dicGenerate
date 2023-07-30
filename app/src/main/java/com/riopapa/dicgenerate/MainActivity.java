@@ -115,9 +115,11 @@ public class MainActivity extends AppCompatActivity {
 //        new S1SortKeywords().sort(extracted);
 //        new S2MergeKeywords().merge(keywords, jsonFile);
 //        new S8XrossCheck().check(dicFolder, jsonFile);
-//        new MakeBible().make(getApplicationContext(), bibFolder);
+
+
+        new MakeBible().make(getApplicationContext(), this, bibFolder);
 //        new MakeRef().make(getApplicationContext(), refFolder, shortBibleNames);
-        new SaJpgCheck().check(dicFolder, jpgFolder);
+//        new SaJpgCheck().check(dicFolder, jpgFolder);
     }
 
     private void showDictContents() {
@@ -211,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             if (!file.exists()) {
                 if (!file.createNewFile()) {
-                    Log.e("file "+file,"File Error");
+                    Log.e("File Error", "file "+file);
                 }
             }
             fw = new FileWriter(file.getAbsoluteFile(), true);
@@ -229,6 +231,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    static void writeFile(File outFile, String outText) {
+        try {
+            FileWriter fileWriter = new FileWriter(outFile, false);
+
+            // Always wrap FileWriter in BufferedWriter.
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.write(outText);
+            bufferedWriter.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 
 
 
